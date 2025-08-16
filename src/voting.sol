@@ -3,6 +3,7 @@ pragma solidity ^0.8.26;
 
 contract Voting {
     struct voter {
+        bool isverify;
         bool hasVoted;
         uint choice;
     }
@@ -30,11 +31,13 @@ contract Voting {
         require(Voters[voterPerson].hasVoted == false, "person already voted");
         Voters[voterPerson].choice = 0;
         Voters[voterPerson].hasVoted = false;
+        Voters[voterPerson].isverify = true;
     }
 
     function vote(uint proposalIndex) external {
         voter storage sender = Voters[msg.sender];
 
+        require(sender.isverify == true, "you are not veirfy to give vote");
         require(sender.hasVoted == false, "you already voted");
         require(proposalIndex < proposals.length, "proposal not exist");
         sender.choice = proposalIndex;
@@ -50,7 +53,7 @@ contract Voting {
                 highestVotes = proposals[i].VoteCounted;
                 winnerIndex = i;
             }
-        }
+        }   
 
         return winnerIndex;
     }
